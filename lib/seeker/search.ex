@@ -17,5 +17,5 @@ defmodule Seeker.Search do
 
   defp sort_params(%{"s" => params}), do: params
   defp sort_params(%{s: params}), do: params
-  defp sort_params(_params), do: %{}
+  defp sort_params(_params), do: ""
 end

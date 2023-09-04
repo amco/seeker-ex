@@ -40,12 +40,12 @@ Assuming a params map with the following structure:
 
 ```elixir
 %{
-  "q" => %{
-    "first_name_eq" => "Foo",
-    "email_end" => "gmail.com",
-    "status_in" => ["premium", "plus"]
+  q: %{
+    first_name_eq: "Foo",
+    email_end: "gmail.com",
+    status_in: ["premium", "plus"]
   },
-  "s" => "last_name+asc"
+  s: "last_name+asc"
 }
 ```
 

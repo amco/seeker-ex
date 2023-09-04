@@ -174,5 +174,66 @@ defmodule SeekerTest do
       results = SeekerApp.all(Post, params)
       assert results == [post1, post2]
     end
+
+    test "retrieves records sorted by one column with default direction" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category3} = Repo.insert(%Category{name: "Tar"})
+
+      params = %{s: "id"}
+      results = SeekerApp.all(Category, params)
+      assert results == [category1, category2, category3]
+    end
+
+    test "retrieves records sorted by one column with asc direction" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category3} = Repo.insert(%Category{name: "Tar"})
+
+      params = %{s: "name+asc"}
+      results = SeekerApp.all(Category, params)
+      assert results == [category2, category1, category3]
+    end
+
+    test "retrieves records sorted by one column with desc direction" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category3} = Repo.insert(%Category{name: "Tar"})
+
+      params = %{s: "id+desc"}
+      results = SeekerApp.all(Category, params)
+      assert results == [category3, category2, category1]
+    end
+
+    test "retrieves records sorted with multiple sorts" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category3} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category4} = Repo.insert(%Category{name: "Tar"})
+
+      params = %{s: "name,id+desc"}
+      results = SeekerApp.all(Category, params)
+      assert results == [category3, category2, category1, category4]
+    end
+
+    test "retrieves unordered records when empty sort param" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category3} = Repo.insert(%Category{name: "Tar"})
+
+      params = %{s: ""}
+      results = SeekerApp.all(Category, params)
+      assert results == [category1, category2, category3]
+    end
+
+    test "retrieves records sorted when empty sort segments" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category3} = Repo.insert(%Category{name: "Bar"})
+
+      params = %{s: ",,name,id+desc,"}
+      results = SeekerApp.all(Category, params)
+      assert results == [category3, category2, category1]
+    end
   end
 end
