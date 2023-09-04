@@ -1,6 +1,11 @@
 # Seeker
 
-**TODO: Add description**
+This library will help you easily add searching to your Phoenix/Ecto
+application, without any additional dependencies.
+
+There are advanced searching solutions around, like ElasticSearch or Algolia.
+Seeker will do the job for many Phoenix/Ecto apps, without the need to run
+additional infrastructure or work in a different language.
 
 ## Installation
 
@@ -49,7 +54,9 @@ Assuming a params map with the following structure:
 }
 ```
 
-In your controller, use `all/2` function like this:
+Please check [supported predicates](https://github.com/amco/seeker-ex/blob/main/lib/seeker/query.ex#L8).
+
+Then, use `all/2` function in the controller like this:
 
 ```elixir
 defmodule MyAppWeb.UserController do
