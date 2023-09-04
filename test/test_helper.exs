@@ -1,9 +1,10 @@
 Logger.configure(level: :info)
 
+alias Seeker.Integration.{Repo, SeekerApp}
+
+Application.put_env(:seeker, SeekerApp, repo: Repo)
 Application.put_env(:ecto, :primary_key_type, :id)
 Application.put_env(:ecto, :async_integration_tests, false)
-
-alias Seeker.Integration.Repo
 
 Application.put_env(:seeker, Repo,
   adapter: Ecto.Adapters.Postgres,

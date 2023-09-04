@@ -1,16 +1,17 @@
 defmodule SeekerTest do
   use Seeker.DataCase
 
+  alias Seeker.Integration.SeekerApp
   alias Seeker.Schemas.{Category, Post}
 
-  describe "search/2" do
+  describe "all/2" do
     test "retrieves records for `eq` predicate" do
       {:ok, category1} = Repo.insert(%Category{name: "Foo"})
       {:ok, _category} = Repo.insert(%Category{name: "Bar"})
 
       params = %{q: %{name_eq: "Foo"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category1]
+      results = SeekerApp.all(Category, params)
+      assert results == [category1]
     end
 
     test "retrieves records for `not_eq` predicate" do
@@ -18,8 +19,8 @@ defmodule SeekerTest do
       {:ok, category2} = Repo.insert(%Category{name: "Bar"})
 
       params = %{q: %{name_not_eq: "Foo"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category2]
+      results = SeekerApp.all(Category, params)
+      assert results == [category2]
     end
 
     test "retrieves records for `in` predicate" do
@@ -28,8 +29,8 @@ defmodule SeekerTest do
       {:ok, _category} = Repo.insert(%Category{name: "Taz"})
 
       params = %{q: %{name_in: ["Foo", "Bar"]}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category1, category2]
+      results = SeekerApp.all(Category, params)
+      assert results == [category1, category2]
     end
 
     test "retrieves records for `not_in` predicate" do
@@ -38,8 +39,8 @@ defmodule SeekerTest do
       {:ok, category3} = Repo.insert(%Category{name: "Taz"})
 
       params = %{q: %{name_not_in: ["Foo", "Bar"]}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category3]
+      results = SeekerApp.all(Category, params)
+      assert results == [category3]
     end
 
     test "retrieves records for `cont` predicate" do
@@ -48,8 +49,8 @@ defmodule SeekerTest do
       {:ok, category3} = Repo.insert(%Category{name: "Taz"})
 
       params = %{q: %{name_cont: "a"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category2, category3]
+      results = SeekerApp.all(Category, params)
+      assert results == [category2, category3]
     end
 
     test "retrieves records for `not_cont` predicate" do
@@ -58,8 +59,8 @@ defmodule SeekerTest do
       {:ok, _category} = Repo.insert(%Category{name: "Taz"})
 
       params = %{q: %{name_not_cont: "a"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category1]
+      results = SeekerApp.all(Category, params)
+      assert results == [category1]
     end
 
     test "retrieves records for `i_cont` predicate" do
@@ -68,8 +69,8 @@ defmodule SeekerTest do
       {:ok, category3} = Repo.insert(%Category{name: "TAZ"})
 
       params = %{q: %{name_i_cont: "a"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category2, category3]
+      results = SeekerApp.all(Category, params)
+      assert results == [category2, category3]
     end
 
     test "retrieves records for `not_i_cont` predicate" do
@@ -78,8 +79,8 @@ defmodule SeekerTest do
       {:ok, _category} = Repo.insert(%Category{name: "TAZ"})
 
       params = %{q: %{name_not_i_cont: "a"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category1]
+      results = SeekerApp.all(Category, params)
+      assert results == [category1]
     end
 
     test "retrieves records for `start` predicate" do
@@ -88,8 +89,8 @@ defmodule SeekerTest do
       {:ok, category3} = Repo.insert(%Category{name: "Taz"})
 
       params = %{q: %{name_start: "Ta"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category2, category3]
+      results = SeekerApp.all(Category, params)
+      assert results == [category2, category3]
     end
 
     test "retrieves records for `not_start` predicate" do
@@ -98,8 +99,8 @@ defmodule SeekerTest do
       {:ok, _category} = Repo.insert(%Category{name: "Taz"})
 
       params = %{q: %{name_not_start: "Ta"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category1]
+      results = SeekerApp.all(Category, params)
+      assert results == [category1]
     end
 
     test "retrieves records for `end` predicate" do
@@ -108,8 +109,8 @@ defmodule SeekerTest do
       {:ok, category3} = Repo.insert(%Category{name: "Tar"})
 
       params = %{q: %{name_end: "ar"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category2, category3]
+      results = SeekerApp.all(Category, params)
+      assert results == [category2, category3]
     end
 
     test "retrieves records for `not_end` predicate" do
@@ -118,8 +119,8 @@ defmodule SeekerTest do
       {:ok, _category} = Repo.insert(%Category{name: "Tar"})
 
       params = %{q: %{name_not_end: "ar"}}
-      results = Seeker.search(Category, params)
-      assert Repo.all(results) == [category1]
+      results = SeekerApp.all(Category, params)
+      assert results == [category1]
     end
 
     test "retrieves records for `gt` predicate" do
@@ -131,8 +132,8 @@ defmodule SeekerTest do
       {:ok, post3} = Repo.insert(%Post{date: date3})
 
       params = %{q: %{date_gt: date2}}
-      results = Seeker.search(Post, params)
-      assert Repo.all(results) == [post3]
+      results = SeekerApp.all(Post, params)
+      assert results == [post3]
     end
 
     test "retrieves records for `gteq` predicate" do
@@ -144,8 +145,8 @@ defmodule SeekerTest do
       {:ok, post3} = Repo.insert(%Post{date: date3})
 
       params = %{q: %{date_gteq: date2}}
-      results = Seeker.search(Post, params)
-      assert Repo.all(results) == [post2, post3]
+      results = SeekerApp.all(Post, params)
+      assert results == [post2, post3]
     end
 
     test "retrieves records for `lt` predicate" do
@@ -157,8 +158,8 @@ defmodule SeekerTest do
       {:ok, _post} = Repo.insert(%Post{date: date3})
 
       params = %{q: %{date_lt: date2}}
-      results = Seeker.search(Post, params)
-      assert Repo.all(results) == [post1]
+      results = SeekerApp.all(Post, params)
+      assert results == [post1]
     end
 
     test "retrieves records for `lteq` predicate" do
@@ -170,8 +171,8 @@ defmodule SeekerTest do
       {:ok, _post} = Repo.insert(%Post{date: date3})
 
       params = %{q: %{date_lteq: date2}}
-      results = Seeker.search(Post, params)
-      assert Repo.all(results) == [post1, post2]
+      results = SeekerApp.all(Post, params)
+      assert results == [post1, post2]
     end
   end
 end
