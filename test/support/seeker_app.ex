@@ -1,3 +1,7 @@
 defmodule Seeker.Integration.SeekerApp do
-  use Seeker, otp_app: :seeker
+  @moduledoc false
+
+  use Seeker,
+    otp_app: :seeker,
+    repo: Seeker.Integration.Repo
 end

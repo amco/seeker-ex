@@ -6,15 +6,15 @@ defmodule Seeker.Schemas.Post do
   alias Seeker.Schemas.{User, Category, Comment}
 
   schema "posts" do
-    field :title, :string
-    field :status, :string
-    field :date, :utc_datetime
+    field(:title, :string)
+    field(:status, :string)
+    field(:date, :utc_datetime)
 
     timestamps()
 
-    belongs_to :author, User
-    belongs_to :category, Category
+    belongs_to(:author, User)
+    belongs_to(:category, Category)
 
-    has_many :comments, Comment
+    has_many(:comments, Comment)
   end
 end

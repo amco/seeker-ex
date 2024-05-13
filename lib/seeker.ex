@@ -7,6 +7,7 @@ defmodule Seeker do
     quote bind_quoted: [opts: opts] do
       alias Seeker.{Search, Config}
 
+      @repo Keyword.fetch!(opts, :repo)
       @otp_app Keyword.fetch!(opts, :otp_app)
 
       @doc """
@@ -44,13 +45,7 @@ defmodule Seeker do
       """
       @spec all(atom() | Ecto.Query.t()) :: list(atom()) | list([])
       def all(scope, params \\ %{}) do
-        with repo <- Keyword.fetch!(config(), :repo) do
-          apply(repo, :all, [query(scope, params)])
-        end
-      end
-
-      defp config do
-        Application.fetch_env!(@otp_app, __MODULE__)
+        apply(@repo, :all, [query(scope, params)])
       end
     end
   end
