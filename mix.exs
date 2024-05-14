@@ -33,6 +33,7 @@ defmodule Seeker.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.10"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:postgrex, ">= 0.0.0", only: [:dev, :test]}

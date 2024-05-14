@@ -19,16 +19,6 @@ def deps do
 end
 ```
 
-## Configuration
-
-Provide a repo in your configuration file:
-
-```elixir
-# config/config.exs
-
-config :my_app, MyApp.Seeker, repo: MyApp.Repo
-```
-
 ## Usage
 
 Add a `MyApp.Seeker` module as the following example:
@@ -37,7 +27,9 @@ Add a `MyApp.Seeker` module as the following example:
 # lib/my_app/seeker.ex
 
 defmodule MyApp.Seeker do
-  use Seeker, otp_app: :my_app
+  use Seeker,
+    otp_app: :my_app,
+    repo: MyApp.Repo
 end
 ```
 

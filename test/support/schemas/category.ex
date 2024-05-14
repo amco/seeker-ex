@@ -6,10 +6,10 @@ defmodule Seeker.Schemas.Category do
   alias Seeker.Schemas.Post
 
   schema "categories" do
-    field :name, :string
+    field(:name, :string)
 
     timestamps()
 
-    has_many :posts, Post
+    has_many(:posts, Post)
   end
 end

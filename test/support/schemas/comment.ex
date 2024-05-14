@@ -6,10 +6,10 @@ defmodule Seeker.Schemas.Comment do
   alias Seeker.Schemas.Post
 
   schema "comments" do
-    field :body, :string
+    field(:body, :string)
 
     timestamps()
 
-    belongs_to :post, Post
+    belongs_to(:post, Post)
   end
 end
