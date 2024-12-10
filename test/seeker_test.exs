@@ -175,6 +175,13 @@ defmodule SeekerTest do
       assert results == [post1, post2]
     end
 
+    test "raises error when predicate does not exist" do
+      assert_raise Seeker.PredicateNotFoundError, fn ->
+        params = %{q: %{name_invalid: "Foo"}}
+        SeekerApp.all(Category, params)
+      end
+    end
+
     test "retrieves records sorted by one column with default direction" do
       {:ok, category1} = Repo.insert(%Category{name: "Foo"})
       {:ok, category2} = Repo.insert(%Category{name: "Bar"})
