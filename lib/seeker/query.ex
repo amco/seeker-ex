@@ -4,6 +4,7 @@ defmodule Seeker.Query do
   """
 
   alias Seeker.Query.Predicates
+  alias Seeker.PredicateNotFoundError
 
   @predicates [
     :not_eq,
@@ -31,16 +32,28 @@ defmodule Seeker.Query do
   end
 
   defp extract_data_from_key(key) do
-    key = to_string(key)
-    predicate = extract_predicate(key)
-    {extract_column(key, predicate), predicate}
+    with {:ok, key} <- sanitize_key(key),
+         {:ok, predicate} <- extract_predicate(key),
+         {:ok, subject} <- extract_subject(key, predicate) do
+      {String.to_existing_atom(subject), predicate}
+    else
+      {:error, :predicate_not_found} ->
+        raise PredicateNotFoundError, key: key
+    end
+  end
+
+  defp sanitize_key(key) do
+    {:ok, to_string(key)}
   end
 
   defp extract_predicate(key) do
-    Enum.find(@predicates, &String.ends_with?(key, "_#{&1}"))
+    case Enum.find(@predicates, &String.ends_with?(key, "_#{&1}")) do
+      nil -> {:error, :predicate_not_found}
+      predicate -> {:ok, predicate}
+    end
   end
 
-  defp extract_column(key, predicate) do
-    String.replace_suffix(key, "_#{predicate}", "") |> String.to_atom()
+  defp extract_subject(key, predicate) do
+    {:ok, String.replace_suffix(key, "_#{predicate}", "")}
   end
 end
