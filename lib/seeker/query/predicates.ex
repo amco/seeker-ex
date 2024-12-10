@@ -5,6 +5,8 @@ defmodule Seeker.Query.Predicates do
 
   import Ecto.Query, warn: false
 
+  def call(scope, {_column, _predicate}, ""), do: scope
+
   def call(scope, {column, :eq}, value) do
     scope |> where([scope], field(scope, ^column) == ^value)
   end

@@ -5,6 +5,15 @@ defmodule SeekerTest do
   alias Seeker.Schemas.{Category, Post}
 
   describe "all/2" do
+    test "ignores value when it is empty" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+
+      params = %{q: %{name_eq: ""}}
+      results = SeekerApp.all(Category, params)
+      assert results == [category1, category2]
+    end
+
     test "retrieves records for `eq` predicate" do
       {:ok, category1} = Repo.insert(%Category{name: "Foo"})
       {:ok, _category} = Repo.insert(%Category{name: "Bar"})
