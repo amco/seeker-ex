@@ -3,19 +3,18 @@ defmodule Seeker.Search do
   Search implementation for `Seeker`.
   """
 
-  alias Seeker.{Query, Sort}
+  import Ecto.Query, warn: false
+
+  alias Seeker.{Joins, Query, Sort}
 
   def call(scope, params \\ %{}) do
+    sorts = Sort.params(params)
+    filters = Query.params(params)
+
     scope
-    |> Query.call(query_params(params))
-    |> Sort.call(sort_params(params))
+    |> from(as: :root)
+    |> Joins.call(params)
+    |> Query.call(filters)
+    |> Sort.call(sorts)
   end
-
-  defp query_params(%{"q" => params}), do: params
-  defp query_params(%{q: params}), do: params
-  defp query_params(_params), do: %{}
-
-  defp sort_params(%{"s" => params}), do: params
-  defp sort_params(%{s: params}), do: params
-  defp sort_params(_params), do: ""
 end

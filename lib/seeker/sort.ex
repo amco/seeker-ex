@@ -5,22 +5,45 @@ defmodule Seeker.Sort do
 
   import Ecto.Query, warn: false
 
-  def call(scope, sorts) do
-    orders =
-      sorts
-      |> String.split(",", trim: true)
-      |> Enum.map(&String.split(&1, "+"))
-      |> Enum.map(&build_order/1)
+  alias Seeker.Extractor
 
-    perform_order(scope, orders)
+  @default_sort "asc"
+
+  @doc """
+  Returns the `s` param key in the connection params.
+  It tries to find it by using the string or atom key.
+
+  ## Parameters
+
+    - params: Map [Plug Conn params]
+
+  ## Examples
+
+      iex> params(%{"s" => "name+asc"})
+      "name+asc"
+
+  """
+  @spec params(map()) :: String.t()
+  def params(%{"s" => params}), do: params
+  def params(%{s: params}), do: params
+  def params(_params), do: ""
+
+  def call(scope, sorts) do
+    sorts
+    |> String.split(",", trim: true)
+    |> Enum.map(&String.split(&1, "+"))
+    |> Enum.map(&extract_order_data/1)
+    |> Enum.reduce(scope, &perform_order/2)
   end
 
-  defp perform_order(scope, []), do: scope
-  defp perform_order(scope, orders), do: scope |> order_by(^orders)
+  defp extract_order_data([subject | tail]) do
+    column = Extractor.column!(subject)
+    direction = List.first(tail) || @default_sort
+    association = Extractor.association!(subject)
+    {association, column, String.to_existing_atom(direction)}
+  end
 
-  defp build_order([column | tail]) do
-    direction = List.first(tail) || "asc"
-    column = String.to_existing_atom(column)
-    {String.to_existing_atom(direction), column}
+  defp perform_order({association, column, direction}, scope) do
+    scope |> order_by([{^association, table}], [{^direction, field(table, ^column)}])
   end
 end
