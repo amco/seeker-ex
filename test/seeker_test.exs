@@ -1,6 +1,8 @@
 defmodule SeekerTest do
   use Seeker.DataCase
 
+  import Ecto.Query, warn: false
+
   alias Seeker.Integration.SeekerApp
   alias Seeker.Schemas.{Category, Post}
 
@@ -184,6 +186,18 @@ defmodule SeekerTest do
       assert results == [post1, post2]
     end
 
+    test "retrieves records for `eq` predicate in belongs to association" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, post1} = Repo.insert(%Post{category: category1})
+      {:ok, _post} = Repo.insert(%Post{category: category2})
+
+      params = %{q: %{category__name_eq: "Foo"}}
+      query = from(p in Post, preload: [:category])
+      results = SeekerApp.all(query, params)
+      assert results == [post1]
+    end
+
     test "raises error when predicate does not exist" do
       assert_raise Seeker.PredicateNotFoundError, fn ->
         params = %{q: %{name_invalid: "Foo"}}
@@ -250,6 +264,20 @@ defmodule SeekerTest do
       params = %{s: ",,name,id+desc,"}
       results = SeekerApp.all(Category, params)
       assert results == [category3, category2, category1]
+    end
+
+    test "retrieves records sorted by one column of an association" do
+      {:ok, category1} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category3} = Repo.insert(%Category{name: "Tar"})
+      {:ok, post1} = Repo.insert(%Post{category: category1})
+      {:ok, post2} = Repo.insert(%Post{category: category2})
+      {:ok, post3} = Repo.insert(%Post{category: category3})
+
+      params = %{s: "category__name+asc"}
+      query = from(p in Post, preload: [:category])
+      results = SeekerApp.all(query, params)
+      assert results == [post2, post1, post3]
     end
   end
 end

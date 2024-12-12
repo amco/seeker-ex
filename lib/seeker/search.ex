@@ -3,19 +3,34 @@ defmodule Seeker.Search do
   Search implementation for `Seeker`.
   """
 
-  alias Seeker.{Query, Sort}
+  import Ecto.Query, warn: false
 
+  alias Seeker.{Joins, Query, Sort}
+
+  @doc """
+  Adds filter and order statements to the ecto query based on
+  the query(`q`) and sort(`s`) params.
+
+  ## Parameters
+
+    - scope: Ecto.Query [Ecto query struct]
+    - params: Map [Plug.Conn params]
+
+  ## Examples
+
+      iex> call(scope, params)
+      %Ecto.Query{}
+
+  """
+  @spec call(Ecto.Query.t(), map()) :: Ecto.Query.t()
   def call(scope, params \\ %{}) do
+    sorts = Sort.params(params)
+    filters = Query.params(params)
+
     scope
-    |> Query.call(query_params(params))
-    |> Sort.call(sort_params(params))
+    |> from(as: :root)
+    |> Joins.call(params)
+    |> Query.call(filters)
+    |> Sort.call(sorts)
   end
-
-  defp query_params(%{"q" => params}), do: params
-  defp query_params(%{q: params}), do: params
-  defp query_params(_params), do: %{}
-
-  defp sort_params(%{"s" => params}), do: params
-  defp sort_params(%{s: params}), do: params
-  defp sort_params(_params), do: ""
 end

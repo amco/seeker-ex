@@ -85,6 +85,57 @@ defmodule MyAppWeb.UserController do
 end
 ```
 
+### Associations
+
+Based on the following schemas:
+
+```elixir
+defmodule MyApp.Post do
+  use Ecto.Schema
+
+  schema "posts" do
+    field(:title, :string)
+
+    belongs_to(:author, MyApp.User)
+    belongs_to(:category, MyApp.Category)
+  end
+end
+
+defmodule MyApp.User do
+  use Ecto.Schema
+
+  schema "users" do
+    field(:name, :string)
+    field(:email, :string)
+
+    has_many(:posts, MyApp.Post, foreign_key: :author_id)
+  end
+end
+
+defmodule Seeker.Schemas.Category do
+  use Ecto.Schema
+
+  schema "categories" do
+    field(:name, :string)
+
+    has_many(:posts, MyApp.Post)
+  end
+end
+```
+
+Posts can be filtered and sorted using double underscore (`__`) in
+the params like this:
+
+```elixir
+%{
+  q: %{
+    category__name_eq: "Foo",
+    author__email_end: "gmail.com"
+  },
+  s: "author__email+desc"
+}
+```
+
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/seeker>.

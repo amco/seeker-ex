@@ -3,6 +3,9 @@ defmodule Seeker.Query do
   Query implementation for `Seeker`.
   """
 
+  import Ecto.Query, warn: false
+
+  alias Seeker.Extractor
   alias Seeker.Query.Predicates
   alias Seeker.PredicateNotFoundError
 
@@ -25,6 +28,40 @@ defmodule Seeker.Query do
     :lteq
   ]
 
+  @doc """
+  Returns the `q` param key in the connection params.
+  It tries to find it by using the string or atom key.
+
+  ## Parameters
+
+    - params: Map [Plug Conn params]
+
+  ## Examples
+
+      iex> params(%{"q" => %{"name_eq" => "Foo"}})
+      %{"name_eq" => "Foo"}
+
+  """
+  @spec params(map()) :: map()
+  def params(%{"q" => params}), do: params
+  def params(%{q: params}), do: params
+  def params(_params), do: %{}
+
+  @doc """
+  Adds filters statements to the ecto query based on the `q` param.
+
+  ## Parameters
+
+    - scope: Ecto.Query [Ecto query struct]
+    - filters: Map [Query params map]
+
+  ## Examples
+
+      iex> call(scope, filters)
+      %Ecto.Query{}
+
+  """
+  @spec call(Ecto.Query.t(), map()) :: Ecto.Query.t()
   def call(scope, filters) do
     Enum.reduce(filters, scope, fn {key, value}, scope ->
       Predicates.call(scope, extract_data_from_key(key), value)
@@ -32,18 +69,16 @@ defmodule Seeker.Query do
   end
 
   defp extract_data_from_key(key) do
-    with {:ok, key} <- sanitize_key(key),
+    with {:ok, key} <- {:ok, to_string(key)},
          {:ok, predicate} <- extract_predicate(key),
-         {:ok, subject} <- extract_subject(key, predicate) do
-      {String.to_existing_atom(subject), predicate}
+         {:ok, subject} <- extract_subject(key, predicate),
+         {:ok, association} <- Extractor.association(subject),
+         {:ok, column} <- Extractor.column(subject) do
+      {association, column, predicate}
     else
       {:error, :predicate_not_found} ->
         raise PredicateNotFoundError, key: key
     end
-  end
-
-  defp sanitize_key(key) do
-    {:ok, to_string(key)}
   end
 
   defp extract_predicate(key) do
