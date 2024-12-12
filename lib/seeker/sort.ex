@@ -10,12 +10,12 @@ defmodule Seeker.Sort do
   @default_sort "asc"
 
   @doc """
-  Returns the `s` param key in the connection params.
-  It tries to find it by using the string or atom key.
+  Returns the `s` param key in the connection params. It tries
+  to find it by using the string or atom key.
 
   ## Parameters
 
-    - params: Map [Plug Conn params]
+    - params: Map [Plug.Conn params]
 
   ## Examples
 
@@ -28,6 +28,21 @@ defmodule Seeker.Sort do
   def params(%{s: params}), do: params
   def params(_params), do: ""
 
+  @doc """
+  Adds order statements to the ecto query based on the `s` param.
+
+  ## Parameters
+
+    - scope: Ecto.Query [Ecto query struct]
+    - sorts: String [Sort param string]
+
+  ## Examples
+
+      iex> call(scope, sorts)
+      %Ecto.Query{}
+
+  """
+  @spec call(Ecto.Query.t(), String.t()) :: Ecto.Query.t()
   def call(scope, sorts) do
     sorts
     |> String.split(",", trim: true)
