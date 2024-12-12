@@ -46,12 +46,12 @@ defmodule Seeker.Sort do
   def call(scope, sorts) do
     sorts
     |> String.split(",", trim: true)
-    |> Enum.map(&String.split(&1, "+"))
     |> Enum.map(&extract_order_data/1)
     |> Enum.reduce(scope, &perform_order/2)
   end
 
-  defp extract_order_data([subject | tail]) do
+  defp extract_order_data(sort) do
+    [subject | tail] = String.split(sort, "+")
     column = Extractor.column!(subject)
     direction = List.first(tail) || @default_sort
     association = Extractor.association!(subject)

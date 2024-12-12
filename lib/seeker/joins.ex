@@ -47,18 +47,27 @@ defmodule Seeker.Joins do
 
   defp query_associations(filters) do
     filters
-    |> Map.keys()
-    |> Enum.map(&to_string/1)
-    |> Enum.map(&Extractor.association!/1)
+    |> Enum.map(&extract_query_association/1)
     |> Enum.reject(&(&1 == :root))
   end
 
   defp sort_associations(sorts) do
     sorts
     |> String.split(",", trim: true)
-    |> Enum.map(&String.split(&1, "+"))
-    |> Enum.map(&List.first/1)
-    |> Enum.map(&Extractor.association!/1)
+    |> Enum.map(&extract_sort_association/1)
     |> Enum.reject(&(&1 == :root))
+  end
+
+  defp extract_query_association({key, _value}) do
+    key
+    |> to_string()
+    |> Extractor.association!()
+  end
+
+  defp extract_sort_association(sort) do
+    sort
+    |> String.split("+")
+    |> List.first()
+    |> Extractor.association!()
   end
 end
