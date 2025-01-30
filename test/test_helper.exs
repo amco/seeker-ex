@@ -7,11 +7,11 @@ Application.put_env(:ecto, :async_integration_tests, false)
 
 Application.put_env(:seeker, Repo,
   adapter: Ecto.Adapters.Postgres,
-  hostname: "localhost",
-  database: "seeker",
-  username: "postgres",
-  password: "password",
-  port: 5434,
+  hostname: System.get_env("DB_HOSTNAME", "localhost"),
+  database: System.get_env("DB_DATABASE", "seeker"),
+  username: System.get_env("DB_USERNAME", "postgres"),
+  password: System.get_env("DB_PASSWORD", ""),
+  port: System.get_env("DB_PORT", "5434"),
   pool: Ecto.Adapters.SQL.Sandbox,
   show_sensitive_data_on_connection_error: true
 )

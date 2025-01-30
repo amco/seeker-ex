@@ -140,3 +140,7 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/seeker>.
 
+### How to test
+
+To test you need a postgres installation. Either look for file test/test_helper or set the following environment variables: DB_HOSTNAME, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+
