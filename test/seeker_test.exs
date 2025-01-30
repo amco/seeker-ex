@@ -186,6 +186,22 @@ defmodule SeekerTest do
       assert results == [post1, post2]
     end
 
+    test "retrieves records for `between` predicate" do
+      date1 = DateTime.utc_now() |> DateTime.add(-60) |> DateTime.truncate(:second)
+      date2 = DateTime.utc_now() |> DateTime.truncate(:second)
+      date3 = DateTime.utc_now() |> DateTime.add(60) |> DateTime.truncate(:second)
+      {:ok, _post} = Repo.insert(%Post{date: date1})
+      {:ok, post2} = Repo.insert(%Post{date: date2})
+      {:ok, _post} = Repo.insert(%Post{date: date3})
+
+      first_date = DateTime.utc_now() |> DateTime.add(-30) |> DateTime.truncate(:second)
+      last_date  = DateTime.utc_now() |> DateTime.add(30)  |> DateTime.truncate(:second)
+
+      params = %{q: %{date_between: [first_date, last_date]}}
+      results = SeekerApp.all(Post, params)
+      assert results == [post2]
+    end
+
     test "retrieves records for `eq` predicate in belongs to association" do
       {:ok, category1} = Repo.insert(%Category{name: "Foo"})
       {:ok, category2} = Repo.insert(%Category{name: "Bar"})

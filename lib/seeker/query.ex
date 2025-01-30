@@ -25,7 +25,8 @@ defmodule Seeker.Query do
     :gt,
     :gteq,
     :lt,
-    :lteq
+    :lteq,
+    :between
   ]
 
   @doc """
