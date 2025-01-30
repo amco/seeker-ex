@@ -186,7 +186,7 @@ defmodule SeekerTest do
       assert results == [post1, post2]
     end
 
-    test "retrieves records for `btwn` predicate" do
+    test "retrieves records for `between` predicate" do
       date1 = DateTime.utc_now() |> DateTime.add(-60) |> DateTime.truncate(:second)
       date2 = DateTime.utc_now() |> DateTime.truncate(:second)
       date3 = DateTime.utc_now() |> DateTime.add(60) |> DateTime.truncate(:second)
