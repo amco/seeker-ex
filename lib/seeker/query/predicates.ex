@@ -70,4 +70,9 @@ defmodule Seeker.Query.Predicates do
   def call(scope, {association, column, :lteq}, value) do
     scope |> where([{^association, table}], field(table, ^column) <= ^value)
   end
+
+  def call(scope, {association, column, :btwn}, [first | last]) do
+    scope |> where([{^association, table}], field(table, ^column) >= ^first
+                                        and field(table, ^column) <= ^Enum.at(last, 0))
+  end
 end
