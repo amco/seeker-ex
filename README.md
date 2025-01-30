@@ -112,7 +112,7 @@ defmodule MyApp.User do
   end
 end
 
-defmodule Seeker.Schemas.Category do
+defmodule MyApp.Category do
   use Ecto.Schema
 
   schema "categories" do
