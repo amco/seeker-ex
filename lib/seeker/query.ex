@@ -26,7 +26,11 @@ defmodule Seeker.Query do
     :gteq,
     :lt,
     :lteq,
-    :between
+    :between,
+    :is_nil,
+    :is_not_nil,
+    :present,
+    :blank
   ]
 
   @doc """
