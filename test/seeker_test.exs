@@ -202,6 +202,46 @@ defmodule SeekerTest do
       assert results == [post2]
     end
 
+    test "retrieves records for `is_nil` predicate" do
+      {:ok, _category} = Repo.insert(%Category{name: "Foo"})
+      {:ok, _category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, category3} = Repo.insert(%Category{name: nil})
+
+      params = %{q: %{name_is_nil: ""}}
+      results = SeekerApp.all(Category, params)
+      assert results == [category3]
+    end
+
+    test "retrieves records for `is_not_nil` predicate" do
+      {:ok, category} = Repo.insert(%Category{name: "Foo"})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, _category3} = Repo.insert(%Category{name: nil})
+
+      params = %{q: %{name_is_not_nil: ""}}
+      results = SeekerApp.all(Category, params)
+      assert results == [category, category2]
+    end
+
+    test "retrieves records for `present` predicate" do
+      {:ok, _category} = Repo.insert(%Category{name: ""})
+      {:ok, category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, _category3} = Repo.insert(%Category{name: nil})
+
+      params = %{q: %{name_present: ""}}
+      results = SeekerApp.all(Category, params)
+      assert results == [category2]
+    end
+
+    test "retrieves records for `blank` predicate" do
+      {:ok, category} = Repo.insert(%Category{name: ""})
+      {:ok, _category2} = Repo.insert(%Category{name: "Bar"})
+      {:ok, _category3} = Repo.insert(%Category{name: nil})
+
+      params = %{q: %{name_blank: ""}}
+      results = SeekerApp.all(Category, params)
+      assert results == [category]
+    end
+
     test "retrieves records for `eq` predicate in belongs to association" do
       {:ok, category1} = Repo.insert(%Category{name: "Foo"})
       {:ok, category2} = Repo.insert(%Category{name: "Bar"})

@@ -5,6 +5,22 @@ defmodule Seeker.Query.Predicates do
 
   import Ecto.Query, warn: false
 
+  def call(scope, {association, column, :present}, _value) do
+    scope |> where([{^association, table}], field(table, ^column) != "")
+  end
+
+  def call(scope, {association, column, :blank}, _value) do
+    scope |> where([{^association, table}], field(table, ^column) == "")
+  end
+
+  def call(scope, {association, column, :is_nil}, _value) do
+    scope |> where([{^association, table}], is_nil(field(table, ^column)))
+  end
+
+  def call(scope, {association, column, :is_not_nil}, _value) do
+    scope |> where([{^association, table}], not is_nil(field(table, ^column)))
+  end
+
   def call(scope, {_association, _column, _predicate}, ""), do: scope
 
   def call(scope, {association, column, :eq}, value) do
