@@ -8,7 +8,7 @@ defmodule Seeker.MixProject do
     [
       app: :seeker,
       version: @version,
-      elixir: "~> 1.14",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       package: package(),
@@ -34,7 +34,7 @@ defmodule Seeker.MixProject do
   defp deps do
     [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:ecto_sql, "~> 3.10"},
+      {:ecto_sql, "~> 3.13"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:postgrex, ">= 0.0.0", only: [:dev, :test]}
     ]

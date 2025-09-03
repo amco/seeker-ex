@@ -195,7 +195,7 @@ defmodule SeekerTest do
       {:ok, _post} = Repo.insert(%Post{date: date3})
 
       first_date = DateTime.utc_now() |> DateTime.add(-30) |> DateTime.truncate(:second)
-      last_date  = DateTime.utc_now() |> DateTime.add(30)  |> DateTime.truncate(:second)
+      last_date = DateTime.utc_now() |> DateTime.add(30) |> DateTime.truncate(:second)
 
       params = %{q: %{date_between: [first_date, last_date]}}
       results = SeekerApp.all(Post, params)
